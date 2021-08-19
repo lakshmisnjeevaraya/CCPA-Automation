@@ -1,0 +1,32 @@
+select email_address,date_of_birth,date_registered,first_name,last_name,address,
+home_phone,gender,
+display_name,last_access_time,friendly_name,sacdate_registered as Slingbox_date_registered,
+user_app,zipcode,browser,user_id,client_id,local_start_time,
+local_end_time from (SELECT mem.email_address as email_address,(case WHEN mem.date_of_birth = NULL then '' else '****' end) as date_of_birth,mem.date_registered as date_registered,mem.first_name as first_name,mem.last_name as last_name,mem.address1,mem.address2,mem.city,mem.state,mem.zip,
+CONCAT(CONCAT(CONCAT(CONCAT(CONCAT(CONCAT(CONCAT(CONCAT(mem.address1, \',\'),mem.address2),\',\'),mem.city),\',\'),mem.state),\',\'),mem.zip) as address,mem.home_phone as home_phone,mem.gender as gender,
+membox.display_name as display_name,membox.last_access_time as last_access_time,sacslbox.finder_id as finder_id,sacslbox.friendly_name as friendly_name,sacslbox.date_registered as sacdate_registered,
+slingcps.user_app as user_app,slingwatch.zipcode as zipcode,slingwatch.browser as browser,slingwatch.user_id as user_id,dvrmgr.user_account as user_account,boxsetup.user_id as boxuser_id,slingconn.client_id as client_id,slingconn.local_start_time as local_start_time,
+slingconn.local_end_time as local_end_time,
+ROW_NUMBER() OVER(PARTITION BY mem.member_id,mem.email_address,mem.date_of_birth,mem.date_registered,mem.first_name,mem.last_name,
+mem.address1,mem.address2,mem.city,mem.state,mem.zip,mem.home_phone,mem.gender,membox.display_name,membox.last_access_time,
+sacslbox.finder_id,sacslbox.friendly_name,sacslbox.date_registered,
+slingcps.user_app,slingwatch.zipcode,slingwatch.browser,slingwatch.user_id,dvrmgr.user_account,boxsetup.user_id,slingconn.client_id,slingconn.local_start_time,
+slingconn.local_end_time order by last_access_time desc) as rn
+FROM sling.sac_member AS mem
+   FULL OUTER JOIN sac_member_sling_box AS membox
+		  ON membox.member_id = mem.member_id
+     FULL OUTER JOIN  sac_sling_box as sacslbox
+      on membox.sling_box_id=sacslbox.sling_box_id
+                  FULL OUTER JOIN slingnet_cps as slingcps
+      on sacslbox.finder_id=slingcps.finder_id AND slingcps.reporting_date >= DateADD(Day,-365,\'{}\') and slingcps.reporting_date < \'{}\'
+            and slingcps.sb_product_signature in (\'000007\',\'000003\',\'000055\',\'000050\',\'000020\',\'000001\',\'000002\',\'000000\',\'000004\',\'000008\',\'000012\',\'000005\',\'00000D\',\'000011\',\'000006\',\'000014\',\'000051\',\'00000C\') FULL OUTER JOIN watch as slingwatch
+      on (slingcps.finder_id=slingwatch.finder_id and mem.email_address=slingwatch.user_id) AND slingwatch.reporting_date >= DateADD (Day,-365,\'{}\') and slingwatch.reporting_date <  \'{}\'
+      and slingwatch.product_id in (\'7\',\'8\',\'85\',\'80\',\'32\',\'1\',\'2\',\'0\',\'4\',\'8\',\'18\',\'5\',\'13\',\'17\',\'6\',\'20\',\'81\',\'12\')
+      FULL OUTER JOIN dvr_mgr_logs as dvrmgr
+      on (slingwatch.finder_id=dvrmgr.finder_id and mem.email_address=dvrmgr.user_account) AND dvrmgr.reporting_date >= DateADD (Day,-365,\'{}\') and dvrmgr.reporting_date <\'{}\'
+      FULL OUTER JOIN box_setup_app as boxsetup
+      on (dvrmgr.finder_id=boxsetup.finder_id and mem.email_address=boxsetup.user_id) AND boxsetup.reporting_date >= DateADD (Day,-365,\'{}\') and boxsetup.reporting_date <\'{}\'
+      and boxsetup.product_id in (\'7\',\'8\',\'85\',\'80\',\'32\',\'1\',\'2\',\'0\',\'4\',\'8\',\'18\',\'5\',\'13\',\'17\',\'6\',\'20\',\'81\',\'12\')
+      FULL OUTER JOIN slingnet_connection as slingconn
+      on (boxsetup.finder_id=slingconn.finder_id and slingcps.user_app=slingconn.user_app)AND slingconn.reporting_date >= DateADD (Day,-365,\'{}\') and slingconn.reporting_date <\'{}\'
+      and slingconn.sb_product_signature in (\'000007\',\'000003\',\'000055\',\'000050\',\'000020\',\'000001\',\'000002\',\'000000\',\'000004\',\'000008\',\'000012\',\'000005\',\'00000D\',\'000011\',\'000006\',\'000014\',\'000051\',\'00000C\')

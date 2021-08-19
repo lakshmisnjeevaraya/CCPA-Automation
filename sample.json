@@ -1,0 +1,38 @@
+{
+            "transction_id": [
+                        "86628"
+            ],
+            "request_type": [
+                        "ReportTask"
+            ],
+            "task_id": [
+                        "CPATSK0011314"
+            ],
+            "request_id": [
+                        "5f275943c128ea004496e54d"
+            ],
+            "s3_file_name": [
+                        "cpa-5f275943c128ea004496e54d/5f275943c128ea004496e54d-CPATSK0011314-FCC.csv"
+            ],
+            "execution_status": [
+                        "PASS"
+            ],
+            "close_status_state": [
+                        "3"
+            ],
+            "close_status_code": [
+                        "1"
+            ],
+            "execution_date": [
+                        "2020-08-03"
+            ],
+            "ccpa_group": [
+                        "CPA-Conviva"
+            ],
+            "submission_date": [
+                        "2020-08-02"
+            ],
+            "error_description": [
+                        ""
+            ]
+}

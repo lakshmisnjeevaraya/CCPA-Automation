@@ -1,0 +1,3 @@
+SELECT b.account_id,date_format(a.FIRST_CURRENT_TIMESTAMP AT TIME ZONE 'US/Mountain','%Y-%m-%d %H:%i:%s')
+FIRST_CURRENT_TIMESTAMP,date_format(a.LAST_CURRENT_TIMESTAMP AT TIME ZONE 'US/Mountain','%Y-%m-%d %H:%i:%s') LAST_CURRENT_TIMESTAMP ,
+a.CONTENT_TYPE,a.CHANNEL_NUMBER,a.CHANNEL_NAME,a.SHOW_TITLE,a.EPISODE_TITLE,a.UUID,a.CLIENT_VERSION,a.OS_NAME,a.FRIENDLY_NAME,a.LANG FROM dish_anywhere.da_vm_v2_sessions AS a INNER JOIN t_dish_anywhere.t_media_sales_xref AS b ON b.uuid = a.uuid

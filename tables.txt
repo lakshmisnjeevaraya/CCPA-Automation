@@ -1,0 +1,6 @@
+public.da_vm
+public.da_vm_sessions
+public.da_vm_v2
+public.da_vm_v2_sessions
+public.da_vm_sessions_whiplash
+public.da_vm_v2_sessions_whiplash
